@@ -31,3 +31,14 @@ No pinned dependency manifest was present at the selected root. The number of do
 ## License
 
 No open-source license has been granted. Redistribution terms remain to be defined.
+
+## Installation and available scripts
+
+```console
+python -m venv .venv
+python -m pip install -r requirements.txt
+```
+
+Activate the virtual environment before installing. Run data collection only with an explicitly configured source. `backpack_klines.py`, `fill_gaps.py` and `indicator_calculator.py` contain the available Parquet pipeline.
+
+`binance_live_unified.py` is incomplete in this snapshot: `binance_select_top.py`, `binance_backfill_warmup.py` and `indicator_cache.py` are missing. Do not use it as a runnable entrypoint. The dependency list is not a compatibility-tested lockfile.
