@@ -1,0 +1,7 @@
+# Runtime imports for the available OHLCV/indicator scripts; versions are not locked.
+numpy
+pandas
+pandas-ta-classic
+pyarrow
+requests
+websockets
