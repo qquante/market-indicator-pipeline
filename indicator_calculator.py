@@ -12,15 +12,11 @@ from typing import Dict, List, Optional
 import warnings
 warnings.filterwarnings('ignore')
 
-# ============================================
 # PATHS
-# ============================================
 DATA_DIR = Path("data/perps")
 TIMEFRAMES = ["1m", "3m", "5m", "15m", "30m", "1h", "4h", "1d"]
 
-# ============================================
 # CUSTOM INDICATORS
-# ============================================
 
 def wavetrend(df: pd.DataFrame, n1: int = 10, n2: int = 21, wt2_window: int = 4) -> pd.DataFrame:
     """WaveTrend (LazyBear) - Indicator from TradingView"""
@@ -227,9 +223,7 @@ def zigzag(df: pd.DataFrame, deviation: float = 5.0) -> pd.DataFrame:
     }, index=df.index)
 
 
-# ============================================
 # MAIN INDICATOR CALCULATOR v2.0
-# ============================================
 
 def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
     """
@@ -244,9 +238,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
     if verbose:
         print(f"  Calculando indicadores para {len(result)} candles...")
     
-    # ==========================================
     # MOMENTUM - EXPANDED
-    # ==========================================
     if verbose:
         print("    [1/7] Momentum indicators...")
     
@@ -318,9 +310,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
     if fisher is not None:
         result = pd.concat([result, fisher], axis=1)
     
-    # ==========================================
     # TREND - EXPANDED
-    # ==========================================
     if verbose:
         print("    [2/7] Trend indicators...")
     
@@ -394,9 +384,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
     # VWMA (Volume Weighted MA) - FALTAVA
     result['vwma_20'] = ta.vwma(result['close'], result['volume'], length=20)
     
-    # ==========================================
     # VOLATILITY - EXPANDED
-    # ==========================================
     if verbose:
         print("    [3/7] Volatility indicators...")
     
@@ -431,9 +419,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
     for period in [10, 20]:
         result[f'stdev_{period}'] = ta.stdev(result['close'], length=period)
     
-    # ==========================================
     # VOLUME - EXPANDED
-    # ==========================================
     if verbose:
         print("    [4/7] Volume indicators...")
     
@@ -489,9 +475,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
     except:
         pass
     
-    # ==========================================
     # CUSTOM INDICATORS
-    # ==========================================
     if verbose:
         print("    [5/7] Custom indicators...")
     
@@ -523,9 +507,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
     zz = zigzag(result, deviation=5.0)
     result = pd.concat([result, zz], axis=1)
     
-    # ==========================================
     # DERIVED SIGNALS
-    # ==========================================
     if verbose:
         print("    [6/7] Derived signals...")
     
@@ -546,9 +528,7 @@ def calculate_all_indicators(df: pd.DataFrame, verbose: bool = True) -> pd.DataF
         np.where((result['sma_20'] < result['sma_50']) & (result['sma_20'].shift(1) >= result['sma_50'].shift(1)), -1, 0)
     )
     
-    # ==========================================
     # CLEANUP
-    # ==========================================
     if verbose:
         print("    [7/7] Cleanup...")
     

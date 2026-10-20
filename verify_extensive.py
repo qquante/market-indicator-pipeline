@@ -69,9 +69,7 @@ def run_tests():
         if warning:
             print(f"      -> {warning}")
     
-    # =========================================
     # 2.1.1 MOMENTUM (15)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.1.1 MOMENTUM")
     print("=" * 70)
@@ -177,9 +175,7 @@ def run_tests():
         exists = test_column_exists(df, col)
         log_result("Fisher", f"{col} existe", exists)
     
-    # =========================================
     # 2.1.2 TREND (12)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.1.2 TREND")
     print("=" * 70)
@@ -254,9 +250,7 @@ def run_tests():
     exists = test_column_exists(df, col)
     log_result("KAMA", f"{col} existe", exists)
     
-    # =========================================
     # 2.1.3 VOLATILIDADE (7)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.1.3 VOLATILIDADE")
     print("=" * 70)
@@ -299,9 +293,7 @@ def run_tests():
     exists = test_column_exists(df, col)
     log_result("StdDev", f"{col} existe", exists)
     
-    # =========================================
     # 2.1.4 VOLUME (9)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.1.4 VOLUME")
     print("=" * 70)
@@ -357,9 +349,7 @@ def run_tests():
     exists = test_column_exists(df, col)
     log_result("Klinger", f"{col} existe", exists)
     
-    # =========================================
     # 2.1.5 SUPORTE/RESISTENCIA (4)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.1.5 SUPORTE/RESISTENCIA")
     print("=" * 70)
@@ -384,9 +374,7 @@ def run_tests():
         exists = test_column_exists(df, col)
         log_result("Vortex", f"{col} existe", exists)
     
-    # =========================================
     # 2.2 CUSTOM (5)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.2 CUSTOM INDICATORS")
     print("=" * 70)
@@ -428,9 +416,7 @@ def run_tests():
         formula_ok = test_formula(df, "pivot_pp", expected_pp)
         log_result("Pivot Points", "PP formula (H+L+C)/3", formula_ok)
     
-    # =========================================
     # 2.3 DERIVADOS (3)
-    # =========================================
     print("\n" + "=" * 70)
     print("2.3 INDICADORES DERIVADOS")
     print("=" * 70)
@@ -456,9 +442,7 @@ def run_tests():
         formula_ok = (df['is_oversold_14'] == expected).all()
         log_result("OBOS Scanner", "is_oversold_14 = RSI<30", formula_ok)
     
-    # =========================================
     # RESUMO FINAL
-    # =========================================
     print("\n" + "=" * 70)
     print("RESUMO FINAL")
     print("=" * 70)
