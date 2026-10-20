@@ -1,78 +1,42 @@
 # Market Indicator Pipeline
 
-**OHLCV collection, gap handling and parameterized indicator datasets.**
-
 ![Language: Python](https://img.shields.io/badge/Language-Python-3776AB?style=flat-square&logo=python) ![Output: Parquet](https://img.shields.io/badge/Output-Parquet-555555?style=flat-square) [![License: MIT](https://img.shields.io/badge/License-MIT-555555?style=flat-square)](LICENSE)
 
-[Overview](#overview) · [Quickstart](#quickstart) · [Example](#example) · [Validation](#validation) · [Documentation](#documentation)
+Prepare OHLCV time series and derive parameterized technical-indicator columns into Parquet datasets for research.
 
-## Overview
+The repository is a collection of data scripts: candle acquisition, gap handling and feature calculation. Its output is a research dataset, not an order-execution strategy.
 
-A Python market-data pipeline for OHLCV collection, gap handling and technical-indicator calculation.
+## Work from candles to features
 
-**Stack:** Python · pandas · NumPy · pandas-ta-classic · Parquet · exchange HTTP/WebSocket clients
+1. [backpack_klines.py](backpack_klines.py) supplies the candle-collection path.
+2. [fill_gaps.py](fill_gaps.py) examines incomplete time ranges.
+3. [indicator_calculator.py](indicator_calculator.py) adds indicator families and writes the derived dataset.
 
-## Time-series preparation before indicators
+The calculator includes custom WaveTrend, pivot points, RSI-divergence, Monday-range and Fibonacci calculations alongside pandas-ta-classic functions. Its configured timeframes range from `1m` through `1d`; local datasets are expected under `data/perps`.
 
-| Component | Behavior |
-| --- | --- |
-| Collect | Exchange candle scripts provide OHLCV input. |
-| Repair | Gap-handling scripts examine incomplete time ranges. |
-| Calculate | pandas-based indicator functions write derived features to Parquet. |
+### Example: calculate WaveTrend on your own candle frame
 
-## Processing path
+```python
+from indicator_calculator import wavetrend
 
-```mermaid
-flowchart LR
-  N0["Exchange candles"]
-  N1["normalization and gap checks"]
-  N2["pandas indicator calculations"]
-  N3["Parquet datasets"]
-N0 --> N1 --> N2 --> N3
+# candles is your pandas DataFrame with high, low and close columns.
+features = wavetrend(candles, n1=10, n2=21, wt2_window=4)
 ```
 
-## Quickstart
+The returned columns are `wt1`, `wt2` and `wt_cross`. Warm-up periods and missing values remain relevant to downstream research; adding a feature column does not validate a trading rule.
+
+## Environment and current gaps
 
 ```console
 python -m venv .venv
-# Activate .venv, then:
 python -m pip install -r requirements.txt
 python -m py_compile backpack_klines.py fill_gaps.py indicator_calculator.py
 ```
 
-The commands above install prerequisites or run the specified offline checks. Live collection, cloud operations, messaging and trading are separate operational steps when present.
+NumPy, pandas, pandas-ta-classic, PyArrow, requests and websockets are declared but not locked as a compatibility-tested environment. Historical datasets are not bundled.
 
-## Example
+`binance_live_unified.py` imports three helpers absent from this snapshot: `binance_select_top.py`, `binance_backfill_warmup.py` and `indicator_cache.py`. Use the separate scripts as the documented source surface; the unified entrypoint is incomplete. Files named `test_*` include provider diagnostics and should not be treated as a fully offline unit suite.
 
-**Inspect the workflow**
+**Technology:** Python · pandas · NumPy · pandas-ta-classic · Parquet · exchange HTTP/WebSocket clients
 
-Use [backpack_klines.py](backpack_klines.py) for the collection path, [fill_gaps.py](fill_gaps.py) for gap processing and [indicator_calculator.py](indicator_calculator.py) for feature calculations. Supply the local data paths expected by each script. Keep candle inputs and derived indicator datasets distinguishable.
-
-## Configuration and storage
-
-`requirements.txt` exists and lists NumPy, pandas, pandas-ta-classic, PyArrow, requests and websockets. Versions are not locked or compatibility-certified. Original market datasets and data paths must be supplied separately.
-
-## Repository guide
-
-| Location | Responsibility |
-| --- | --- |
-| [backpack_klines.py](backpack_klines.py) | Candle collection |
-| [fill_gaps.py](fill_gaps.py) | Gap handling |
-| [indicator_calculator.py](indicator_calculator.py) | Indicator calculations |
-| [requirements.txt](requirements.txt) | Unpinned dependencies |
-
-## Validation
-
-The quickstart lists the declared checks. No passing CI or coverage claim is implied by the technology badges.
-
-## Scope and operational boundaries
-
-`binance_live_unified.py` references missing `binance_select_top.py`, `binance_backfill_warmup.py` and `indicator_cache.py`; it is not a complete runnable entrypoint. Syntax checks do not verify indicator arithmetic, feed coverage or strategy performance.
-
-## Documentation
-
-- The repository guide above links directly to the implementation and configuration files.
-
-## License and attribution
-
-Project-authored source code is licensed under the [MIT License](LICENSE). Third-party components and datasets retain their respective rights and licenses.
+Project-authored source: [MIT](LICENSE). Third-party components retain their own notices and terms.
